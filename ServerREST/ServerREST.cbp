@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ServerREST" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/ServerREST" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=gnu++11" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add directory="class" />
+				</Compiler>
+				<Linker>
+					<Add library="libcrypto" />
+					<Add library="libcrypt" />
+					<Add library="libssl" />
+					<Add library="libboost_system" />
+					<Add library="libcpprest" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ServerREST" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="class" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="class/Common.hpp" />
+		<Unit filename="class/Data.hpp" />
+		<Unit filename="class/Handler.cpp" />
+		<Unit filename="class/Handler.hpp" />
+		<Unit filename="main.cpp" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
