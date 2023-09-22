@@ -1,8 +1,5 @@
-#include <vector>
-#include <exception>
-#include <map>
 #include "Handler.hpp"
-#include "Data.hpp"
+#include "RequestUtil.hpp"
 
 using namespace std;
 using namespace web;
@@ -31,70 +28,33 @@ Handler::~Handler()
 /**
 * GET
 */
-void Handler::handle_get(http_request message)
+void Handler::handle_get(http_request request)
 {
-    cout << U("GET request message: ") << message.to_string() << endl;
-    cout << U("Relative URI ") << message.relative_uri().to_string() << endl;
+    cout << U("GET request message: ") << request.to_string() << endl;
 
-    vector<utility::string_t> paths = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
-    for(auto it1 = paths.begin(); it1!=paths.end(); it1++) {
-        cout << U("Path") << U(" ") << *it1 << endl;
+    RequestUtil::DisplaySplitedRequestPath(&request);
+
+    const utility::string_t key("request");
+    const utility::string_t request_message = RequestUtil::GetDataInQuery(&request, key);
+
+    // get developer by id
+    if(request_message == U("get_developer_by_id")) {
+        _controller.GetDeveloperById(&request);
     }
-
-    map<utility::string_t, utility::string_t> query = http::uri::split_query(http::uri::decode(message.relative_uri().query()));
-    for(auto it2 = query.begin(); it2!=query.end(); it2++) {
-        cout << U("Query") << U(" ") << it2->first << U(" ") << it2->second << endl;
-    }
-
-    auto queryItr = query.find(U("request"));
-    utility::string_t request = queryItr->second;
-    cout << U("Request") << U(" ") << request << endl;
-
-    if(request == U("get_developers")) {
-
-        DataPeople dataPeople;
-        dataPeople.job = ("Developers");
-
-        People p1;
-        p1.age = 25;
-        p1.name = U("Jack");
-        dataPeople.peoples.push_back(p1);
-
-        People p2;
-        p2.age = 20;
-        p2.name = U("John");
-        dataPeople.peoples.push_back(p2);
-
-        utility::string_t response = dataPeople.AsJSON().serialize();
-        cout << "Reponse: " << response << endl;
-
-        message.reply(status_codes::OK, dataPeople.AsJSON()).then([=](pplx::task<void>t) {
-            try {
-                t.get();
-            }
-            catch(const std::exception &e) {
-                cout << "Error exception: " << e.what() << endl;
-            }
-        });
-
-        return;
+    // get all developers
+    else if(request_message == U("get_all_developers")) {
+        _controller.GetAllDevelopers(&request);
     }
     else {
         Http_Request_Error error;
         error.http_error_code = status_codes::Forbidden;
         error.errorMessage = U("Forbidden: Unrecognized request");
-        message.reply(status_codes::Forbidden, error.AsJSON()).then([](pplx::task<void> t) {
-            try {
-                t.get();
-            }
-            catch (const std::exception &e) {
-                cout << "Error exception: " << e.what() << endl;
-            }
+        request.reply(status_codes::Forbidden, error.AsJSON()).then([=](pplx::task<void> t) {
+            handle_error(t);
         });
         cout << "Error: " << error.http_error_code << " " << error.errorMessage << endl;
         return;
     }
-
 
     return;
 }
@@ -102,35 +62,66 @@ void Handler::handle_get(http_request message)
 /**
 * PUT
 */
-void Handler::handle_put(http_request message)
+void Handler::handle_put(http_request request)
 {
-    ucout <<  "PUT request message: " << message.to_string() << endl;
+    cout <<  "PUT request message: " << request.to_string() << endl;
     string rep = U("PUT request response");
-    message.reply(status_codes::OK,rep);
+    request.reply(status_codes::OK,rep);
 }
 
 /**
 * POST
 */
-void Handler::handle_post(http_request message)
+void Handler::handle_post(http_request request)
 {
-    ucout <<  "POST request message: " << message.to_string() << endl;
-    string rep = U("POST request response");
-    message.reply(status_codes::OK,rep);
+    cout <<  "POST request message: " << request.to_string() << endl;
+
+    const utility::string_t key("request");
+    const utility::string_t request_message = RequestUtil::GetDataInQuery(&request, key);
+
+    // adding developer
+    if(request_message == U("add_developer")) {
+        _controller.AddDeveloper(&request);
+    }
+    else {
+        Http_Request_Error error;
+        error.http_error_code = status_codes::Forbidden;
+        error.errorMessage = U("Forbidden: Unrecognized request");
+        request.reply(status_codes::Forbidden, error.AsJSON()).then([=](pplx::task<void> t) {
+            handle_error(t);
+        });
+        cout << "Error: " << error.http_error_code << " " << error.errorMessage << endl;
+        return;
+    }
 }
 
 /**
 * DELETE
 */
-void Handler::handle_delete(http_request message)
+void Handler::handle_delete(http_request request)
 {
-    ucout <<  "DELETE request message: " << message.to_string() << endl;
-    string rep = U("DELETE request response");
-    message.reply(status_codes::OK,rep);
+    cout << U("DELETE request message: ") << request.to_string() << endl;
+
+    const utility::string_t key("request");
+    const utility::string_t request_message = RequestUtil::GetDataInQuery(&request, key);
+
+    if(request_message == U("delete_developer_by_id")) {
+        _controller.DeleteDeveloperById(&request);
+    }
+    else {
+        Http_Request_Error error;
+        error.http_error_code = status_codes::Forbidden;
+        error.errorMessage = U("Forbidden: Unrecognized request");
+        request.reply(status_codes::Forbidden, error.AsJSON()).then([=](pplx::task<void> t) {
+            handle_error(t);
+        });
+        cout << "Error: " << error.http_error_code << " " << error.errorMessage << endl;
+        return;
+    }
 }
 
 /**
-* handle error
+* Handle error
 */
 void Handler::handle_error(pplx::task<void>& t)
 {

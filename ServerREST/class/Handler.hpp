@@ -1,12 +1,14 @@
 /**
-* Handler gérant les requêtes GET, PUT, POST, DELETE
-* TODO: UPDATE.
+* Handler for request GET, PUT, POST, DELETE.
+* @author: Jocelyn GIROD
+* @date: Septembre 2023
 */
 
 #ifndef HANDLER_HPP
 #define HANDLER_HPP
 
 #include "Common.hpp"
+#include "Controller.hpp"
 
 class Handler {
 public:
@@ -28,19 +30,21 @@ protected:
 
 private:
 
-    /** GET */
-    void handle_get(web::http::http_request message);
-    /** PUT */
-    void handle_put(web::http::http_request message);
-    /** POST */
-    void handle_post(web::http::http_request message);
-    /** DELETE */
-    void handle_delete(web::http::http_request message);
+    /** Handler for GET request */
+    void handle_get(web::http::http_request request);
+    /** Handler for PUT request */
+    void handle_put(web::http::http_request request);
+    /** Handler for POST request */
+    void handle_post(web::http::http_request request);
+    /** Handler for DELETE request */
+    void handle_delete(web::http::http_request request);
 
-    /** ERROR */
+    /** Handler for error */
     void handle_error(pplx::task<void>& t);
 
     web::http::experimental::listener::http_listener m_listener;
+
+    Controller _controller;
 };
 
 #endif // HANDLER_HPP

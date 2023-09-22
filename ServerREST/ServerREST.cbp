@@ -16,6 +16,11 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add directory="class" />
+					<Add directory="class/controller" />
+					<Add directory="class/service" />
+					<Add directory="class/util" />
+					<Add directory="class/manager" />
+					<Add directory="class/dao" />
 				</Compiler>
 				<Linker>
 					<Add library="libcrypto" />
@@ -23,6 +28,8 @@
 					<Add library="libssl" />
 					<Add library="libboost_system" />
 					<Add library="libcpprest" />
+					<Add library="libpqxx" />
+					<Add library="libpq" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -33,6 +40,11 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="class" />
+					<Add directory="class/controller" />
+					<Add directory="class/service" />
+					<Add directory="class/util" />
+					<Add directory="class/manager" />
+					<Add directory="class/dao" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -44,9 +56,20 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="class/Common.hpp" />
-		<Unit filename="class/Data.hpp" />
 		<Unit filename="class/Handler.cpp" />
 		<Unit filename="class/Handler.hpp" />
+		<Unit filename="class/controller/Controller.cpp" />
+		<Unit filename="class/controller/Controller.hpp" />
+		<Unit filename="class/dao/DeveloperDao.cpp" />
+		<Unit filename="class/dao/DeveloperDao.hpp" />
+		<Unit filename="class/data/dto/DeveloperDto.hpp" />
+		<Unit filename="class/data/entities/DataEntities.hpp" />
+		<Unit filename="class/manager/DataBaseManager.cpp" />
+		<Unit filename="class/manager/DataBaseManager.hpp" />
+		<Unit filename="class/service/Service.cpp" />
+		<Unit filename="class/service/Service.hpp" />
+		<Unit filename="class/util/RequestUtil.cpp" />
+		<Unit filename="class/util/RequestUtil.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

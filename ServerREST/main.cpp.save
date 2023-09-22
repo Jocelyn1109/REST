@@ -41,6 +41,8 @@ int main(int argc, char *argv[])
     DataBaseManager::GetInstance(&dbParam);
     utility::string_t port = U("34568");
 
+    cout << "toto" << endl;
+
     if(argc == 2) {
         port = argv[1];
     }
@@ -49,6 +51,26 @@ int main(int argc, char *argv[])
     address.append(port);
 
     initialize_handler(address);
+
+    //Data base connection
+    pqxx::work *pTransaction = DataBaseManager::GetTransaction();
+
+    utility::string_t sql_query("SELECT * FROM public.\"Developers\"");
+    pqxx::result r = pTransaction->exec(sql_query.c_str());
+
+    cout << endl;
+    for(pqxx::result::const_iterator c = r.begin(); c != r.end(); ++c) {
+        cout << "id = " << c[0].as<int>() << endl;
+        cout << "first_name = " << c[1].as<string>() << endl;
+        cout << "name = " << c[2].as<string>() << endl;
+        cout << "age = " << c[3].as<int>() << endl;
+        cout << "address = " << c[4].as<string>() << endl;
+        cout << "country = " << c[5].as<string>() << endl;
+        cout << "phone_number = " << c[6].as<string>() << endl;
+        cout << "company = " << c[7].as<string>() << endl;
+        cout << "development_language = " << c[8].as<string>() << endl << endl;
+    }
+    cout << endl;
 
     cout << "Press ENTER to exit." << endl;
 
