@@ -20,6 +20,7 @@ public:
     void GetAllDevelopers(const web::http::http_request *request);
     void AddDeveloper(const web::http::http_request *request);
     void DeleteDeveloperById(const web::http::http_request *request);
+    void UpdateDeveloper(const web::http::http_request *request);
 
 protected:
 

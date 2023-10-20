@@ -19,10 +19,11 @@ struct DeveloperDto {
     static DeveloperDto FromJson(const web::json::object &json_object)
     {
         DeveloperDto developerDto;
-        if(!json_object.at(U("id")).as_string().empty()) {
+
+        if(!json_object.find(U("id"))->first.empty()) {
             developerDto.id = json_object.at(U("id")).as_integer();
         }
-        developerDto.first_name = json_object.at(U("firstname")).as_string();
+        developerDto.first_name = json_object.at(U("first_name")).as_string();
         developerDto.name = json_object.at(U("name")).as_string();
         developerDto.age = json_object.at(U("age")).as_integer();
         developerDto.address = json_object.at(U("address")).as_string();

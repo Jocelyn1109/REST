@@ -19,6 +19,7 @@ public:
     DevelopersDto * GetAllDevelopers();
     DeveloperDto * GetDeveloperById(int id);
     void AddDeveloper(DeveloperDto developerDto);
+    void UpdateDeveloper(DeveloperDto developerDto);
     void DeleteDeveloperById(int id);
 
 protected:

@@ -65,8 +65,24 @@ void Handler::handle_get(http_request request)
 void Handler::handle_put(http_request request)
 {
     cout <<  "PUT request message: " << request.to_string() << endl;
-    string rep = U("PUT request response");
-    request.reply(status_codes::OK,rep);
+
+    const utility::string_t key("request");
+    const utility::string_t request_message = RequestUtil::GetDataInQuery(&request, key);
+
+    // update developer
+    if(request_message == U("update_developer")) {
+        _controller.UpdateDeveloper(&request);
+    }
+    else {
+        Http_Request_Error error;
+        error.http_error_code = status_codes::Forbidden;
+        error.errorMessage = U("Forbidden: Unrecognized request");
+        request.reply(status_codes::Forbidden, error.AsJSON()).then([=](pplx::task<void> t) {
+            handle_error(t);
+        });
+        cout << "Error: " << error.http_error_code << " " << error.errorMessage << endl;
+        return;
+    }
 }
 
 /**
